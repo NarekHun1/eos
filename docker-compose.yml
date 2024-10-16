@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  app:
+    build:
+      context: .
+      target: build
+    container_name: eos-actions-fetcher
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    volumes:
+      - .:/app
+    command:
+      node dist/index.js
+
+volumes:
+  mongo-data:
+
